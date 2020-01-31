@@ -39,7 +39,8 @@ namespace SteamFriendPlayUI.Controls
         {
             _userInfo = userInfo;
             DisplayName.Text = userInfo.Name;
-            Avatar.Source = new BitmapImage(userInfo.AvatarSmall);
+            if (userInfo.AvatarSmallBmp != null)
+                Avatar.Source = userInfo.AvatarSmallBmp;
             ToolTip.Text = userInfo.ProfileUrl.ToString();
         }
 

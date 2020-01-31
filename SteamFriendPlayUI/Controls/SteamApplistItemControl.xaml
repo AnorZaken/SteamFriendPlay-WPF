@@ -9,19 +9,21 @@
     d:DesignHeight="20"
     d:DesignWidth="200">
 
-    <StackPanel Orientation="Horizontal">
-        <TextBlock x:Name="AppName_TextBlock" Margin="10, 0">
-            <!--<Hyperlink x:Name="AppUrl">Link!</Hyperlink>-->
-        </TextBlock>
-        <ListView x:Name="OwnersList" Margin="20, 2">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.DisplayMemberPath>
-                Name
-            </ListView.DisplayMemberPath>
-        </ListView>
-    </StackPanel>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+    <TextBlock x:Name="AppName_TextBlock" Margin="10, 0" Grid.Column="0">
+        <!--<Hyperlink x:Name="AppUrl">Link!</Hyperlink>-->
+    </TextBlock>
+    <ListView x:Name="OwnersList" Grid.Column="1" Margin="20,2" SelectionMode="None" Width="auto">
+        <ListView.ItemsPanel>
+            <ItemsPanelTemplate>
+                <VirtualizingStackPanel Orientation="Horizontal" Margin="0"/>
+            </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
+    </ListView>
+    </Grid>
 </UserControl>
