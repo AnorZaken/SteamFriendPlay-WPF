@@ -39,11 +39,11 @@ namespace SteamFriendPlayUI
         public MainPage()
         {
             this.InitializeComponent();
-            FriendPlay = new FriendPlayViewModel();
+            //FriendPlay = new FriendPlayViewModel();
             _fpService = new SteamFriendPlayService();
         }
 
-        public FriendPlayViewModel FriendPlay { get; set; }
+        //public FriendPlayViewModel FriendPlay { get; set; }
 
         private async void ResolveButton_Click(object sender, RoutedEventArgs e)
         {
@@ -119,7 +119,7 @@ namespace SteamFriendPlayUI
             {
                 var text = SteamUserId_TextBox.Text;
                 SteamUserId_TextBox.Text = PLEASE_WAIT;
-                FriendPlay.Data = null;
+                //FriendPlay.Data = null;
                 var result = await _fpService.GetUserAndFriendsAppsAsync(id);
                 UpdatePlayData(result);
                 SteamUserId_TextBox.Text = text;
@@ -128,14 +128,19 @@ namespace SteamFriendPlayUI
             VanityUrl_TextBox.IsEnabled = true;
         }
 
+        private IEnumerable<SteamApplistItemControl> _apps = Enumerable.Empty<SteamApplistItemControl>();
+
         private void UpdatePlayData(UserAndFriendsApps playData)
         {
-            FriendPlay.Data = playData;
+            var apps = new List<SteamApplistItemControl>(playData?.Apps?.Length ?? 0);
+
+            //FriendPlay.Data = playData;
             FriendsList.Items.Clear();
             GamesList.Items.Clear();
             if (playData == null)
             {
                 //FriendsList.Items.Add("Load up a userId above!");
+                _apps = Enumerable.Empty<SteamApplistItemControl>();
             }
             else
             {
@@ -150,15 +155,19 @@ namespace SteamFriendPlayUI
                 }
 
                 var dict = playData.Friends.Where(ui => ui.Success).ToDictionary(ui => ui.Id, ui => ui.Value);
+                dict.Add(playData.SteamUserId, playData.UserInfo);
 
                 foreach (var app in playData.Apps)
                 {
-                    GamesList.Items.Add(new SteamApplistItemControl()
+                    var sali = new SteamApplistItemControl()
                     {
                         AppName = app.AppName,
                         Owners = app.UserIds.Select(id => (dict.TryGetValue(id, out var ui), ui)).Where(t => t.Item1).Select(t => t.Item2).ToArray(),
-                    });
+                    };
+                    apps.Add(sali);
+                    GamesList.Items.Add(sali);
                 }
+                _apps = apps;
             }
         }
 
@@ -172,6 +181,22 @@ namespace SteamFriendPlayUI
         {
             if (e.Key == VirtualKey.Enter && PlayButton.IsEnabled)
                 PlayButton_Click(sender, e);
+        }
+
+        private void FriendsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            GamesList.Items.Clear();
+            if (FriendsList.SelectedItems.Count == 0) // no selection made -> show all
+            {
+                foreach (var it in _apps)
+                    GamesList.Items.Add(it);
+            }
+            else
+            {
+                var selected = new HashSet<UserInfo>(FriendsList.SelectedItems.Cast<UserInfoControl>().Select(ui => ui.UserInfo));
+                foreach (SteamApplistItemControl it in _apps.Where(i => selected.IsSubsetOf(i.Owners)))
+                    GamesList.Items.Add(it);
+            }
         }
     }
 }

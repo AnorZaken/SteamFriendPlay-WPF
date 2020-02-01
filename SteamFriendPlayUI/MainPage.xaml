@@ -79,6 +79,7 @@
                  ScrollViewer.HorizontalScrollMode="Enabled"
                  ScrollViewer.CanContentRenderOutsideBounds="False"
                  ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                 SelectionChanged="FriendsList_SelectionChanged"
                  >
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>

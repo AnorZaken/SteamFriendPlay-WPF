@@ -144,8 +144,6 @@
     <Compile Include="Models\VanityUrlResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\NotificationBase.cs" />
-    <Compile Include="ViewModels\FriendPlayViewModel.cs" />
-    <Compile Include="ViewModels\SteamUserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
